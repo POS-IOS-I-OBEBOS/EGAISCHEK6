@@ -3,6 +3,30 @@ setlocal
 
 REM Determine the project directory relative to this script
 set "SCRIPT_DIR=%~dp0"
+
+REM Ensure every run writes a transcript to a timestamped log file
+if not defined LOGGING_ACTIVE (
+    for /f "delims=" %%I in ('powershell -NoProfile -Command "(Get-Date).ToString(^"yyyyMMdd-HHmmss^")"') do set "TIMESTAMP=%%I"
+    if not defined TIMESTAMP (
+        set "TIMESTAMP=manual-log"
+    )
+    set "LOG_DIR=%SCRIPT_DIR%logs"
+    if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
+    set "LOG_FILE=%LOG_DIR%\build-%TIMESTAMP%.log"
+    set "LOGGING_ACTIVE=1"
+    echo [INFO] Full build output will be logged to: %LOG_FILE%
+    powershell -NoProfile -Command ^
+        "$logPath = '%LOG_FILE%';" ^
+        "$dir = Split-Path -Path $logPath;" ^
+        "if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null };" ^
+        "Start-Transcript -Path $logPath -Append | Out-Null;" ^
+        "& cmd /c \""%~f0" %*\";" ^
+        "$exitCode = $LASTEXITCODE;" ^
+        "Stop-Transcript | Out-Null;" ^
+        "exit $exitCode"
+    exit /b %errorlevel%
+)
+
 set "PROJECT_DIR=%SCRIPT_DIR%src\DataMatrixRecognizerApp"
 set "PROJECT_FILE=%PROJECT_DIR%\DataMatrixRecognizerApp.csproj"
 

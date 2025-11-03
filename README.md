@@ -62,6 +62,8 @@ src/DataMatrixRecognizerApp/
 ```
 
 Скрипт последовательно выполняет команды `dotnet restore`, `dotnet build` и `dotnet publish` (Release, win-x64). Готовый exe будет расположен в папке `bin/Release/net8.0-windows/win-x64/publish`.
+
+Каждый запуск автоматически сохраняет полный вывод в файл `logs/build-YYYYMMDD-HHMMSS.log`, что облегчает диагностику ошибок сборки.
 Для публикации исполняемого файла под Windows используйте `dotnet publish`:
 
 ```powershell
