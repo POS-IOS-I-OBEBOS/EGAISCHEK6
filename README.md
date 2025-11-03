@@ -55,6 +55,13 @@ src/DataMatrixRecognizerApp/
 
 ## Сборка
 
+Для публикации исполняемого файла под Windows можно воспользоваться подготовленным скриптом `build.bat` в корне репозитория:
+
+```powershell
+.\build.bat
+```
+
+Скрипт последовательно выполняет команды `dotnet restore`, `dotnet build` и `dotnet publish` (Release, win-x64). Готовый exe будет расположен в папке `bin/Release/net8.0-windows/win-x64/publish`.
 Для публикации исполняемого файла под Windows используйте `dotnet publish`:
 
 ```powershell
